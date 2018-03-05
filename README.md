@@ -4,8 +4,8 @@ This projects help you in building hadoop,hive and spark for hive on spark setup
 
 
 ## Getting Started
- * Configure you cluster information
- * Build/Download Apache Hadoop,Spark,Hive distributions
+ * Configure cluster information
+ * Builds/Downloads Apache Hadoop,Spark,Hive distributions
  * Ansible Configuration for installing Hadoop
  * Starting Hadoop Services
  * Running Benchmarks
@@ -20,9 +20,9 @@ Below Softwares are required for setup.
  * Currently this project supports Centos OS only
 
 ### Configure you cluster information in file hadoop_software/HOS_setup.sh
- * MASTER_HOSTNAME: congiure master-node hostname with full domain
+ * MASTER_HOSTNAME: configure master-node hostname with full domain
  * SLAVES=(
- 	Confgiure all the nodes information here in the format
+ 	Configure all the nodes information here in the format
 	hostname:ipaddress:Password for root user
  )
  ```
@@ -68,7 +68,7 @@ $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
 ```
 Versions used in the script:
 Hadoop version: 2.9.0
-JAVA version: Oracle jdk161
+JAVA version: Oracle jdk8_161
 
 Hive on Spark:
 Spark: 1.6.3
