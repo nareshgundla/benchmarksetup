@@ -1,0 +1,101 @@
+---
+- name: Install required packages
+  yum: 
+    name: "{{item}}"
+    state: present
+  with_items:
+    - unzip
+    - bc
+    - zip
+    - lzo
+  tags:
+    - install_req_packages
+- name: Configurations Used
+  debug:
+    msg: "{{item}}"
+  with_items:
+    - "HDFS NAME DIR: {{ HADOOP_HDFS_NAME_DIR }}"
+    - "HDFS CHKPT DIR: {{ HADOOP_HDFS_CHKPT_DIR }}"
+    - "DRIVES LIST: {{ DEVICES_LIST }}"
+    - "HDFS DATA DIR: {{ HADOOP_HDFS_DATA_DIR }}"
+    - "YARN DATA DIR: {{ HADOOP_YARN_DIR }}"
+    - "HDFS DATA DIR SUFFIX: {{HDFS_DATA_DIR_SUFFIX}}"
+    - "Slaves::{{ HADOOP_SLAVE_HOSTNAME}}"
+    - " NUMBER OF NODES : {{HADOOP_NODES_COUNT}}"
+    - "REPLICATION FACTOR : {{HADOOP_HDFS_REPLICATION}}"
+  tags:
+    - config_check
+
+- name: Install Hadoop
+  unarchive:
+    remote_src: "{{ REMOTE_HADOOP_SRC }}"
+    src: "{{ HADOOP_INSTALL_FILE }}"
+    dest: "{{ HADOOP_INSTALL_LOC }}"
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+    mode: 0775
+    creates: "{{HADOOP_INSTALL_LOC}}/{{ HADOOP_FOLDER }}"
+  tags:
+    - hadoop_install
+
+- name: Copy Hadoop_Conf files
+  template:
+    src: "{{ item.src_fname }}"
+    dest: "{{ HADOOP_INSTALLED_LOC }}/etc/hadoop/{{ item.dest_fname }}"
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  with_items: "{{ hadoop_conf_files }}"
+  tags:
+    - hadoop_conf_copy
+
+- name: Create Hdfs Data Directories
+  file:
+    path: "{{ item }}"
+    mode: 0775
+    state: directory
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  with_items: "{{ HADOOP_HDFS_DATA_DIR.split(',') }}"
+  tags:
+    - hadoop_hdfs_datadir_mkdir
+    
+- name: Create Yarn Data Directories
+  file:
+    path: "{{ item }}"
+    mode: 0775
+    state: directory
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  with_items: "{{ HADOOP_YARN_DIR.split(',') }}"
+  tags:
+    - hadoop_yarn_datadir_mkdir
+    
+- name: Create Hdfs Namenode directories
+  file:
+    path: "{{item}}"
+    mode: 0775
+    state: directory
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  with_items: "{{ HADOOP_HDFS_NN_DIR }}"
+  when: ansible_fqdn == HADOOP_MASTER
+  tags:
+    - hdfs_nn_dir_creation
+
+- name: Copy spark-yarn-shuffle.jar for enabling Spark Dynamic Execution
+  copy:
+    remote_src: "{{ REMOTE_HADOOP_SRC }}"
+    src: "{{ SPARK_YARN_SHUFFLE }}"
+    dest: "{{ HADOOP_INSTALLED_LOC }}/share/hadoop/yarn/"
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  when: SPARK_DYNAMIC_EXECUTION == "YES" and not ansible_check_mode 
+  tags:
+    - spark_yarn_jar_copy
+    
+- name: Java install
+  include_role:
+    name: java_install
+  tags:
+    - java_install  
+    

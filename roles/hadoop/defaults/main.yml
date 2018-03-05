@@ -1,0 +1,39 @@
+---
+USER: root
+GROUP: root
+JAVA_INSTALL_LOC: /usr/local
+JAVA_INSTALL_FILE: jdk-8u131-linux-x64.tar.gz
+JAVA_FOLDER: jdk1.8.0_131
+
+HADOOP_USER: root
+HADOOP_GROUP: root
+HADOOP_INSTALL_LOC: /usr/local/bin
+HADOOP_MASTER: localhost.localdomain.com
+CLUSTER_SIZE: "{{(ansible_play_batch | length)|int}}"
+HADOOP_NODES_COUNT: "{% if  CLUSTER_SIZE| version_compare('1',operator='eq') %}{{1|int}}{%elif CLUSTER_SIZE| version_compare('1',operator='gt') %}{{CLUSTER_SIZE|int-1}}{%endif%}"
+HADOOP_HDFS_REPLICATION: "{% if HADOOP_NODES_COUNT|version_compare('3',operator='le')%}{{1|int}}{%else%}{{3|int}}{%endif%}"
+#For Namenode,Datanode heapsize configure below in MD
+HADOOP_HDFS_NN_SN_HEAPSIZE_MB: 1024
+#Configure below value to a drive on Namenode
+HADOOP_HDFS_NAME_PREFIX: /data/datab
+HDFS_PREFIX: hdfs
+HDFS_DATA_DIR_SUFFIX: /hadoop/hdfs
+YARN_DATA_DIR_SUFFIX: /hadoop/nm-local-dir
+
+HADOOP_INSTALL_FILE: hadoop-2.8.1.tar.gz
+HADOOP_FOLDER: hadoop-2.8.1
+SPARK_YARN_SHUFFLE: spark-2.2.0-yarn-shuffle.jar
+
+YARN_MEM_RESOURCE_PERCENTATION: 0.92
+CORES_FOR_OS: 3
+YARN_LOG_ENABLE: false
+YARN_LOG_SECONDS: 7200
+YARN_DISK_PERCENTAGE_UTILIZATION: 90
+YARN_NODEMANAGER_HEAPSIZE_MB: 10240
+REMOTE_HADOOP_SRC: no
+BIGBENCH_USE_NR_HUGEPAGES: no
+USE_NR_HUGEPAGES: "{{BIGBENCH_USE_NR_HUGEPAGES}}"
+SPARK_DYNAMIC_EXECUTION: NO
+
+
+

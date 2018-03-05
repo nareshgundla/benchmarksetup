@@ -1,0 +1,26 @@
+---
+HADOOP_HDFS_NAME_DIR: "{{HADOOP_HDFS_NAME_PREFIX}}/hadoop/{{HDFS_PREFIX}}/name"
+HADOOP_HDFS_CHKPT_DIR: "{{HADOOP_HDFS_NAME_PREFIX}}/hadoop/{{HDFS_PREFIX}}/chkpt"
+HADOOP_HDFS_NN_DIR:
+  - "{{HADOOP_HDFS_NAME_DIR}}"
+  - "{{HADOOP_HDFS_CHKPT_DIR}}"
+hadoop_conf_files:
+  - { src_fname: core-site.j2 , dest_fname: core-site.xml }
+  - { src_fname: hdfs-site.j2 , dest_fname: hdfs-site.xml }
+  - { src_fname: yarn-site.j2 , dest_fname: yarn-site.xml }
+  - { src_fname: slaves.j2 , dest_fname: slaves }
+  - { src_fname: master.j2, dest_fname: master}
+  - { src_fname: hadoop-env.j2, dest_fname: hadoop-env.sh}
+  - { src_fname: yarn-env.j2, dest_fname: yarn-env.sh}
+  - { src_fname: mapred-site.j2, dest_fname: mapred-site.xml}
+
+DEVICES_LIST: "{{ ansible_mounts | selectattr('fstype','match','ext4')| map(attribute='mount')|list| difference('/boot')}}"
+HADOOP_HDFS_DATA_DIR: "{%if (DEVICES_LIST|length) == 0 %}{{HDFS_DATA_DIR_SUFFIX}} {%else%}{%for item in DEVICES_LIST%}{{item}}{{HDFS_DATA_DIR_SUFFIX}}{%if not loop.last%}{{','}}{%endif%}{%endfor%}{%endif%}"
+HADOOP_YARN_DIR: "{%if (DEVICES_LIST|length) == 0 %}{{YARN_DATA_DIR_SUFFIX}} {%else%}{%for item in DEVICES_LIST%}{{item}}{{YARN_DATA_DIR_SUFFIX}}{%if not loop.last%}{{','}}{%endif%}{%endfor%}{%endif%}"
+HADOOP_HDFS_NN_HANDLER_CNT: "{{ [20*(HADOOP_NODES_COUNT|int|log(2))| int,10] | max }}"
+HADOOP_HDFS_NN_SERVICE_HANDLER_CNT: "{{[((HADOOP_HDFS_NN_HANDLER_CNT|int)/ 2)|int, 10]| max}}"
+JAVA_INSTALLED_LOC: "{{JAVA_INSTALL_LOC}}/{{JAVA_FOLDER}}"
+HADOOP_INSTALLED_LOC: "{{HADOOP_INSTALL_LOC}}/{{HADOOP_FOLDER}}"
+HADOOP_SLAVE_HOSTNAME: "{% if HADOOP_MASTER == ansible_fqdn and (ansible_play_batch|length)!= 1%}{{ansible_play_batch|list| difference(HADOOP_MASTER) }}{%else%}{{ansible_nodename}}{%endif%}"
+HADOOP_YARN_RESOURCE_CPU: "{{ ansible_processor_vcpus-CORES_FOR_OS }}"
+HADOOP_YARN_RESOURCE_MB: "{{ (ansible_memtotal_mb* YARN_MEM_RESOURCE_PERCENTATION ) | int }}"

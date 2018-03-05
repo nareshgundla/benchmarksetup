@@ -1,0 +1,7 @@
+{% if HADOOP_MASTER == ansible_fqdn and (ansible_play_batch|length)!= 1%}
+{% for slave in HADOOP_SLAVE_HOSTNAME %}
+{{slave}}
+{%endfor%}
+{%else%}
+{{HADOOP_SLAVE_HOSTNAME}}
+{%endif%}

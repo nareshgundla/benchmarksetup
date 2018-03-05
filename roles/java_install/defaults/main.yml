@@ -1,0 +1,7 @@
+---
+USER: root
+GROUP: root
+JAVA_INSTALL_LOC: /usr/local
+JAVA_INSTALL_FILE: jdk-8u131-linux-x64.tar.gz
+JAVA_FOLDER: jdk1.8.0_131
+REMOTE_JAVA_SRC: no

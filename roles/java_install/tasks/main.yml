@@ -1,0 +1,12 @@
+---
+- name: Install Java 
+  unarchive:
+    remote_src: "{{ REMOTE_JAVA_SRC }}"
+    src: "{{ JAVA_INSTALL_FILE }}"
+    dest: "{{ JAVA_INSTALL_LOC }}"
+    owner: "{{ USER }}"
+    group: "{{ GROUP }}"
+    mode: 0755
+    creates: "{{JAVA_INSTALL_LOC}}/{{ JAVA_FOLDER }}"  
+  tags:
+    - java_install
