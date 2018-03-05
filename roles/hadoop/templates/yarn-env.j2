@@ -82,7 +82,7 @@ export YARN_NODEMANAGER_HEAPSIZE={{YARN_NODEMANAGER_HEAPSIZE_MB}}
 # Specify the JVM options to be used when starting the NodeManager.
 # These options will be appended to the options specified as YARN_OPTS
 # and therefore may override any similar flags set in YARN_OPTS
-{% if BIGBENCH_USE_NR_HUGEPAGES == 'YES' %}
+{% if BIGBENCH_USE_NR_HUGEPAGES == 'yes' %}
 export YARN_NODEMANAGER_OPTS="-XX:+UseLargePages"
 {%endif%}
 
