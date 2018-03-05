@@ -21,7 +21,7 @@
     - "YARN DATA DIR: {{ HADOOP_YARN_DIR }}"
     - "HDFS DATA DIR SUFFIX: {{HDFS_DATA_DIR_SUFFIX}}"
     - "Slaves::{{ HADOOP_SLAVE_HOSTNAME}}"
-    - " NUMBER OF NODES : {{HADOOP_NODES_COUNT}}"
+    - "NUMBER OF NODES : {{HADOOP_NODES_COUNT}}"
     - "REPLICATION FACTOR : {{HADOOP_HDFS_REPLICATION}}"
   tags:
     - config_check
@@ -89,7 +89,7 @@
     dest: "{{ HADOOP_INSTALLED_LOC }}/share/hadoop/yarn/"
     owner: "{{ HADOOP_USER }}"
     group: "{{ HADOOP_GROUP }}"
-  when: SPARK_DYNAMIC_EXECUTION == "YES" and not ansible_check_mode 
+  when: SPARK_DYNAMIC_EXECUTION == "yes" and not ansible_check_mode 
   tags:
     - spark_yarn_jar_copy
     

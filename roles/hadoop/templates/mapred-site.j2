@@ -43,11 +43,11 @@
   </property>
   <property>
     <name>mapreduce.map.java.opts</name>
-    <value>-Djava.net.preferIPv4Stack=true {%if BIGBENCH_USE_NR_HUGEPAGES == 'YES'%} -XX:+UseLargePages{%endif%}  -XX:ParallelGCThreads=1 -XX:+UseParallelGC -XX:+UseParallelOldGC -XX:NewSize=300m -XX:MaxNewSize=300m -Xms2867m -Xmx2867m -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps</value>
+    <value>-Djava.net.preferIPv4Stack=true {%if BIGBENCH_USE_NR_HUGEPAGES == 'yes'%} -XX:+UseLargePages{%endif%}  -XX:ParallelGCThreads=1 -XX:+UseParallelGC -XX:+UseParallelOldGC -XX:NewSize=300m -XX:MaxNewSize=300m -Xms2867m -Xmx2867m -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps</value>
   </property>
   <property>
     <name>mapreduce.reduce.java.opts</name>
-    <value>-Djava.net.preferIPv4Stack=true {%if BIGBENCH_USE_NR_HUGEPAGES == 'YES'%} -XX:+UseLargePages{%endif%} -XX:ParallelGCThreads=1 -XX:+UseParallelGC -XX:+UseParallelOldGC -XX:NewSize=300m -XX:MaxNewSize=300m -Xms2867m -Xmx2867m -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps</value>
+    <value>-Djava.net.preferIPv4Stack=true {%if BIGBENCH_USE_NR_HUGEPAGES == 'yes'%} -XX:+UseLargePages{%endif%} -XX:ParallelGCThreads=1 -XX:+UseParallelGC -XX:+UseParallelOldGC -XX:NewSize=300m -XX:MaxNewSize=300m -Xms2867m -Xmx2867m -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps</value>
   </property>
  <property>
     <name>mapreduce.map.memory.mb</name>
