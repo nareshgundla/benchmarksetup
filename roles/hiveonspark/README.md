@@ -1,26 +1,36 @@
-You will need to run hiveonspark role along side java_install,hadoop roles 
-Hive on spark role performs 
- 1 Installs Apache Hive
- 2 Installs Custom Apache Spark build without hive
- 3 Installs Custom Apache Spark build with hive
- 4 Installs Derby Database
- 5 Creates and Install BigBench
- 6 Creates Hive metastore directory
- 7 Copies Hive,Spark,BigBench configuration files and set the environment values accordingly
- 8 Copies Spark jars to Hive Lib folder
+# Installation of Hive, Spark and hive on spark, enable spark dynamic execution setup for BigBench.
+This role performs below steps
+ * Installs Apache Hive
+ * Installs Custom Apache Spark build without hive
+ * Installs Custom Apache Spark build with hive
+ * Installs Derby Database
+ * Creates directory for bigbench and copies BigBench scripts
+ * Creates Hive metastore directory
+ * Copies Hive,Spark,BigBench configuration files and set the environment values accordingly
+ * Copies Spark jars to Hive Lib folder
  
-## All Variable Need to be Configured in variable.yml file approporiate to you cluster
+## Getting Started
+ * Configuration : All Variable Need to be Configured in hadoop_variable.yml file approporiate to you cluster
+ * Running Ansible role
 ```
-- name: basic configuration
+ansible-playbook playbook.yml -tags hiveonspark
+
+Sample playbook.yml
+
+- name: set up hive on spark on master node
   hosts: master (full name with domain name)
   vars_files:
-    - variable.yml
+    - hadoop_variable.yml
   roles:
-    - role: hiveonspark
-      
+    - { role: hiveonspark, tags: hiveonspark}
+```      
 
-# After Running java_install, hadoop role on all machines then run hiveonspark on master node
-#Below Steps are needed for Running BigBench
+Assumption/ pre-requisties
+ * Assumes you have already ran the hadoop role on all the machines.
+
+After Running the play book please follow the steps mentioned in the file Start_Benchmark_BigBench.txt
+#Follow below steps to make cluster ready for running BigBench
+```
 #On Master node:
   Set Environment variable in .bashrc file
   export JAVA_HOME=
@@ -67,5 +77,4 @@ $SPARK_WITH_HIVEHOME/sbin/start-historyserver.sh
 
 #Run Benchmark 
 $BIGBENCH_HOME/bin/bigBench runBenchmark -f 1[scalefactor] -s 2[NumberOfStreams] -m 80[NumberOfMapper@DataGen]
-
-  
+``` 
