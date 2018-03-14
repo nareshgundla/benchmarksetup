@@ -1,0 +1,55 @@
+---
+- name: "Drives Info"
+  debug:
+    msg: "{{item}}"
+  with_items:
+    - "Boot Drive : {{BOOT_DRIVE}}"
+    - "All Existing Drives : {{ansible_devices}}"
+    - "All Mounted Drives : {{MOUNTED_DRIVES}}"
+    - "Drives which need to be Mounted: {{DRIVE_NAMES}}"
+#    - " Final Drive names : {{ FILTER_DRIVE_NAMES }}"
+  tags:
+    - config_check 
+
+- name: "Final Drives Check"
+  debug:
+    msg: '{{item}}-- {{item | match("sd.")}}--final printed'
+  with_items:
+    - "{{ DRIVE_NAMES }}"
+  when:  item | match("sd.")
+
+- name: "Creating Partition Information"
+  parted:
+    device: "/dev/{{item}}"
+    label: gpt
+    unit: TB
+    part_type: primary
+    state: present
+  with_items: "{{ DRIVE_NAMES }}"
+  when: item | match("sd.")
+  tags:
+    - format
+    - partition
+
+- name: "Formating Drive"
+  filesystem:
+    fstype: ext4
+    dev: "/dev/{{item}}"
+    force: yes
+    resizefs: yes
+  with_items: "{{ DRIVE_NAMES }}"
+  when: item | match("sd.")
+  tags:
+    - format
+    - DataDelete
+
+- name: "Mounts the formated drives"
+  mount:
+    path: "/data/data{{item[-1]}}"
+    src: "/dev/{{ item }}"
+    fstype: ext4
+    state: mounted
+    opts: defaults,noatime
+  with_items: "{{ DRIVE_NAMES }}"  
+  when: item | match("sd.")
+

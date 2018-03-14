@@ -1,0 +1,6 @@
+BOOT_DRIVE: "{% for item in ansible_mounts if item.mount == '/boot' %}{{item.device[5:8]}}{%endfor%}"
+MOUNT_POINTS: "{{ ansible_mounts | map(attribute='device') |list }}"
+MOUNTED_DRIVES: "{% for item in MOUNT_POINTS %}{{item[5:]}} {% if not loop.last%},{%endif%}{%endfor%}"
+DRIVE_NAMES: "{{ ansible_devices | list | difference(BOOT_DRIVE)| list | difference(MOUNTED_DRIVES)}}"
+#FILTER_DRIVE_NAMES: '{{ DRIVE_NAMES | match(sd*) | list }}'
+#map('regex_search','sd*') | select('string') | list  }}"
