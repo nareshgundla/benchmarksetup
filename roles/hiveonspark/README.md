@@ -10,7 +10,7 @@ This role performs below steps
  * Copies Spark jars to Hive Lib folder
  
 ## Getting Started
- * Configuration : All Variable Need to be Configured in hadoop_variable.yml file approporiate to you cluster
+ * Configuration : All Variables Need to be Configured in hadoop_variable.yml file approporiate to you cluster
  * Running Ansible role
 ```
 ansible-playbook playbook.yml -tags hiveonspark
@@ -25,13 +25,14 @@ Sample playbook.yml
     - { role: hiveonspark, tags: hiveonspark}
 ```      
 
-Assumption/ pre-requisties
+Assumptions/ pre-requisties
  * Assumes you have already ran the hadoop role on all the machines.
+ * Assumes you have already downloaded BigBench Tar file from http://www.tpc.org/tpc_documents_current_versions/current_specifications.asp and placed inside hadoop_software/package_dir
 
-After Running the play book please follow the steps mentioned in the file Start_Benchmark_BigBench.txt
-#Follow below steps to make cluster ready for running BigBench
+After Running the play book please follow the steps mentioned in the file Start_Benchmark_BigBench.txt according to you cluster paths.
+ * Follow below steps to make your cluster ready for running BigBench
 ```
-#On Master node:
+#On Master node/Slaves nodes:
   Set Environment variable in .bashrc file
   export JAVA_HOME=
   export PATH=$PATH:$JAVA_HOME/bin:$JAVA_HOME/jre/bin
