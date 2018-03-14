@@ -1,0 +1,164 @@
+---
+- name: Install Apache Hive
+  unarchive:
+    remote_src: "{{ HIVE_REMOTE_SRC }}"
+    src: "{{ HIVE_INSTALL_FILE }}"
+    dest: "{{ HADOOP_INSTALL_LOC }}"
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+    mode: 0775
+    creates: "{{HADOOP_INSTALL_LOC}}/{{ HIVE_FOLDER }}"
+  tags:
+    - hive_install
+    - hive
+
+- name: Install Apache Spark without hive
+  unarchive:
+    remote_src: "{{ SPARK_WITHOUTHIVE_SRC }}"
+    src: "{{ SPARK_WITHOUT_HIVE_INSTALL_FILE }}"
+    dest: "{{ HADOOP_INSTALL_LOC }}"
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+    mode: 0775
+    creates: "{{HADOOP_INSTALL_LOC}}/{{ SPARK_WITHOUT_HIVE_FOLDER }}"
+  tags:
+    - spark_without_hive_install
+    
+- name: Install Apache Spark with hive
+  unarchive:
+    remote_src: "{{SPARK_WITH_HIVE_SRC}}"
+    src: "{{ SPARK_WITH_HIVE_INSTALL_FILE }}"
+    dest: "{{ HADOOP_INSTALL_LOC }}"
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+    mode: 0775
+    creates: "{{HADOOP_INSTALL_LOC}}/{{ SPARK_WITH_HIVE_FOLDER }}"
+  tags:
+    - spark_with_hive_install
+    - spark
+
+- name: Install Derby Database
+  unarchive:
+    remote_src: "{{ DERBY_REMOTE_SRC}}"
+    src: "{{ DERBY_INSTALL_FILE }}"
+    dest: "{{ HADOOP_INSTALL_LOC }}"
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+    mode: 0775
+    creates: "{{HADOOP_INSTALL_LOC}}/{{ DERBY_FOLDER }}"
+  tags:
+    - derby_install
+    - derby
+
+- name: Create BigBench Installation Directory 
+  file:
+    path: "{{BIGBENCH_INSTALL_LOC}}"
+    mode: 0775
+    state: directory
+    owner: "{{ BENCHMARK_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  tags:
+    - bigbench_installation_dir_creation
+    - bigbench
+
+- name: Install BigBench
+  unarchive:
+    remote_src: "{{ REMOTE_BIGBENCH_SRC }}"
+    src: "{{ BIGBENCH_FILE }}"
+    dest: "{{ BIGBENCH_INSTALL_LOC }}"
+    owner: "{{ BENCHMARK_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+    mode: 0775
+    creates: "{{BIGBENCH_INSTALL_LOC}}/{{ BIGBENCH_FOLDER }}"
+  when: not ansible_check_mode 
+  tags:
+    - bigbench_install
+    - bigbench
+    
+- name: Create Hive directories
+  file:
+    path: "{{item}}"
+    mode: 0775
+    state: directory
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  with_items: "{{ HADOOP_HDFS_HIVE_DIR }}"
+  tags:
+    - hdfs_hive_dir_creation
+
+- name: Copy Hive,Spark Conf files
+  template:
+    src: "{{ item.src_fname }}"
+    dest: "{{ item.dest_fname }}"
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  with_items: "{{ conf_files }}"
+  tags:
+    - hive_spark_conf_copy
+- name: Copy BigBench Conf files
+  template:
+    src: "{{ item.src_fname }}"
+    dest: "{{ item.dest_fname }}"
+    owner: "{{ BENCHMARK_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  with_items: "{{ conf_files_bb }}"
+  tags:
+    - bigbench_conf_copy
+
+- name: Get Spark jars names specific to version
+  shell:  "ls | grep 'scala-library*\\|spark-core*\\|spark-network-common*'"
+  args:
+     chdir: "{{SPARK_WITHOUT_HIVE_INSTALLED_LOCATION}}/jars"
+  register: result_gt
+  when: HIVE_VERSION_PREFIX > 1
+  tags: 
+    - spark_jars_to_hive
+
+- name: Get Spark jars name with related to sparkonhive -applies to hive less than 2.2 
+  shell: "ls | grep 'spark-assembly*'"
+  args:
+     chdir: "{{SPARK_WITHOUT_HIVE_INSTALLED_LOCATION}}/lib"
+  register: result_lt
+  when: HIVE_VERSION_PREFIX < 2.2
+
+- name: Copy Spark dependency jar to Hive Library for Hive 2.2>
+  copy:
+    remote_src: yes
+    src: "{{SPARK_WITHOUT_HIVE_INSTALLED_LOCATION}}/jars/{{item}}"
+    dest: "{{HIVE_INSTALLED_LOCATION}}/lib"
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  with_items: "{{result_gt.stdout_lines}}"
+  when: not ansible_check_mode and HIVE_VERSION_PREFIX > 1
+  tags:
+    - spark_jars_to_hive
+- name: Copy Spark dependency jar to Hive Library for Hive<2
+  copy:
+    remote_src: yes
+    src: "{{SPARK_WITHOUT_HIVE_INSTALLED_LOCATION}}/lib/{{item}}"
+    dest: "{{HIVE_INSTALLED_LOCATION}}/lib"
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  with_items: "{{result_lt.stdout_lines}}"
+  when: not ansible_check_mode and HIVE_VERSION_PREFIX < 2.2
+  tags:
+    - spark_jars_to_hive
+
+- name: Get derby jars name with related derby version 
+  shell: "ls | grep 'derbyclient*\\|derbytools*'"
+  args:
+     chdir: "{{HADOOP_INSTALL_LOC}}/{{ DERBY_FOLDER }}/lib"
+  register: result
+  when: HIVE_CUSTOM_BUILD != 'YES'
+      
+- name: Copy derby dependency jar to Hive Library
+  copy:
+    remote_src: yes
+    src: "{{HADOOP_INSTALL_LOC}}/{{ DERBY_FOLDER }}/lib/{{item}}"
+    dest: "{{HIVE_INSTALLED_LOCATION}}/lib"
+    owner: "{{ HADOOP_USER }}"
+    group: "{{ HADOOP_GROUP }}"
+  with_items: "{{result.stdout_lines}}"
+  when: not ansible_check_mode and HIVE_CUSTOM_BUILD != 'YES'
+  tags:
+    - derby_jars_to_hive

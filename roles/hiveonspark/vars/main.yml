@@ -1,0 +1,35 @@
+---
+HIVE_METASTORE_DIR: "{{HADOOP_HDFS_NAME_PREFIX}}/hive_data"
+HADOOP_HDFS_HIVE_DIR:
+  - "{{HIVE_METASTORE_DIR}}"
+HIVE_INSTALLED_LOCATION: "{{HADOOP_INSTALL_LOC}}/{{HIVE_FOLDER}}"
+SPARK_WITHOUT_HIVE_INSTALLED_LOCATION: "{{HADOOP_INSTALL_LOC}}/{{SPARK_WITHOUT_HIVE_FOLDER}}"
+SPARK_WITH_HIVE_INSTALLED_LOCATION: "{{HADOOP_INSTALL_LOC}}/{{SPARK_WITH_HIVE_FOLDER}}"
+DERBY_INSTALLED_LOCATION: "{{HADOOP_INSTALL_LOC}}/{{DERBY_FOLDER}}"
+BIGBENCH_INSTALLED_FOLDER: "{{BIGBENCH_INSTALL_LOC}}/{{BIGBENCH_FOLDER}}"
+JAVA_INSTALLED_LOC: "{{JAVA_INSTALL_LOC}}/{{JAVA_FOLDER}}"
+HADOOP_INSTALLED_LOC: "{{HADOOP_INSTALL_LOC}}/{{HADOOP_FOLDER}}"
+HADOOP_ENV_VAR:
+  - "export JAVA_HOME={{JAVA_INSTALLED_LOC}}"
+  - "export PATH=$PATH:$JAVA_HOME/bin:$JAVA_HOME/jre/bin"
+  - "export HADOOP_HOME={{HADOOP_INSTALLED_LOC}}"
+  - "export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin"
+  - "export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop"
+  - "export HIVE_HOME={{HIVE_INSTALLED_LOCATION}}"
+  - "export PATH=$PATH:$HIVE_HOME/bin"
+  - "export HADOOP_CLIENT_OPTS=\"-Xmx4096m\""
+  - "export SPARK_DIST_CLASSPATH=$(hadoop classpath)"
+
+conf_files:
+  - { src_fname: hive-site.j2 , dest_fname: "{{HIVE_INSTALLED_LOCATION}}/conf/hive-site.xml" }
+  - { src_fname: "spark-defaults_{{BIG_BENCH_ENGINE}}.j2" , dest_fname: "{{SPARK_WITH_HIVE_INSTALLED_LOCATION}}/conf/spark-defaults.conf" }
+
+conf_files_bb:
+  - { src_fname: userSettings.j2 , dest_fname: "{{BIGBENCH_INSTALLED_FOLDER}}/conf/userSettings.conf" }
+  - { src_fname: "engineSettings_conf_{{BIG_BENCH_ENGINE}}.j2" , dest_fname: "{{BIGBENCH_INSTALLED_FOLDER}}/engines/{{BIG_BENCH_ENGINE}}/conf/engineSettings.conf" }
+  - { src_fname: "engineSettings_conf_hive.j2" , dest_fname: "{{BIGBENCH_INSTALLED_FOLDER}}/engines/hive/conf/engineSettings.conf" }
+  - { src_fname: "engineSettings_sql_{{BIG_BENCH_ENGINE}}.j2" , dest_fname: "{{BIGBENCH_INSTALLED_FOLDER}}/engines/hive/conf/engineSettings.sql" }
+  - { src_fname: env_variable.j2, dest_fname: "{{BIGBENCH_INSTALL_LOC}}/Start_Benchmark_BigBench.txt" }
+
+
+

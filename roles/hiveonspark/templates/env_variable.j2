@@ -1,0 +1,44 @@
+### Step1: Starting Hadoop Services
+
+#ADD Below variable to .bashrc file
+
+{% for config in HADOOP_ENV_VAR %}
+{{config}}
+{%endfor%}
+
+source ~/.bashrc
+{{HADOOP_INSTALLED_LOC}}/bin/hdfs namenode -format
+{{HADOOP_INSTALLED_LOC}}/sbin/start-dfs.sh
+{{HADOOP_INSTALLED_LOC}}/sbin/start-yarn.sh
+{{HADOOP_INSTALLED_LOC}}/sbin/mr-jobhistory-daemon.sh start historyserver
+
+#Validation
+{{HADOOP_INSTALLED_LOC}}/bin/hdfs dfsadmin -report
+# (check for the number of datanodes)
+{{HADOOP_INSTALLED_LOC}}/bin/yarn node -list 
+#(check for number of nodes)
+# http://master-node:8088/cluster --> Nodes --> Mem Avail and VCores Avail for each node
+#Create Hdfs data directories
+{{HADOOP_INSTALLED_LOC}}/bin/hdfs dfs -mkdir -p /user/$USER
+{{HADOOP_INSTALLED_LOC}}/bin/hdfs dfs -mkdir -p /user/spark/applicationHistory
+{{HADOOP_INSTALLED_LOC}}/bin/hdfs dfs -chmod g+w /user/spark/applicationHistory
+{{HADOOP_INSTALLED_LOC}}/bin/hdfs dfs -mkdir -p /tmp
+{{HADOOP_INSTALLED_LOC}}/bin/hdfs dfs -chmod g+w /tmp
+{{HADOOP_INSTALLED_LOC}}/bin/hdfs dfs -mkdir -p /user/hive/warehouse
+{{HADOOP_INSTALLED_LOC}}/bin/hdfs dfs -chmod g+w /user/hive/warehouse
+mkdir /tmp/spark-events
+
+### Step2: Hive On Spark Setup
+#Start Derby Server
+nohup {{DERBY_INSTALLED_LOCATION}}/bin/startNetworkServer -h {{HADOOP_MASTER}} &
+#Initialize Hive Schema (one time only)
+{{HIVE_INSTALLED_LOCATION}}/bin/schematool -dbType derby -initSchema  
+#Start hive metastore
+nohup {{HIVE_INSTALLED_LOCATION}}/bin/hive --service metastore &
+{{SPARK_WITH_HIVE_INSTALLED_LOCATION}}/sbin/start-history-server.sh
+#Spark History Server URL : http://master-node:18080/
+
+### Step3: Run BigBench Benchmark 
+#{{BIGBENCH_INSTALLED_FOLDER}}/bin/bigBench runBenchmark -f 1[scalefactor] -s 2[NumberOfStreams] -m 80[NumberOfMapper@DataGen]
+{{BIGBENCH_INSTALLED_FOLDER}}/bin/bigBench runBenchmark -f 1 -s 2
+
