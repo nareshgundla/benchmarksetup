@@ -7,7 +7,6 @@
     - "All Existing Drives : {{ansible_devices}}"
     - "All Mounted Drives : {{MOUNTED_DRIVES}}"
     - "Drives which need to be Mounted: {{DRIVE_NAMES}}"
-#    - " Final Drive names : {{ FILTER_DRIVE_NAMES }}"
   tags:
     - config_check 
 
