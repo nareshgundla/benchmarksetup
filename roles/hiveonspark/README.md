@@ -10,7 +10,7 @@ This role performs below steps
  * Copies Spark jars to Hive Lib folder
  
 ## Getting Started
- * Configuration : All Variables Need to be Configured in hadoop_variable.yml file approporiate to you cluster
+ * Configuration : All Variables Need to be Configured in hadoop_variable.yml file approporiate to your cluster
  * Running Ansible role
 ```
 ansible-playbook playbook.yml -tags hiveonspark
@@ -49,7 +49,7 @@ SPARK_WITH_HIVE_FOLDER: spark-2.2.0-bin-hadoop27_with_Phive
 DERBY_INSTALL_FILE: db-derby-10.10.2.0-bin.zip
 DERBY_FOLDER: db-derby-10.10.2.0-bin
 
-#BIGbench directories with tunings zip
+#Downloaded BigBench tar file 
 BIGBENCH_FILE: TPCx-BB_v1.2.zip
 BIGBENCH_FOLDER: TPCx-BB_v1.2
 BIG_BENCH_ENGINE: hive
@@ -66,7 +66,7 @@ Assumptions/ pre-requisties
  * Assumes you have already ran the hadoop role on all the machines.
  * Assumes you have already downloaded BigBench Tar file from http://www.tpc.org/tpc_documents_current_versions/current_specifications.asp and placed inside hadoop_software/package_dir
 
-After Running the play book please follow the steps mentioned in the file Start_Benchmark_BigBench.txt according to you cluster paths.
+After Running the play book please follow the steps mentioned in the file BIGBENCH_INSTALL_LOC/Start_Benchmark_BigBench.txt according to your cluster paths.
  * Follow below steps to make your cluster ready for running BigBench
 ```
 #On Master node/Slaves nodes:

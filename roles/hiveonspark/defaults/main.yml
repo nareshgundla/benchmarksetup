@@ -43,7 +43,7 @@ SPARK_WITH_HIVE_FOLDER: spark-2.2.0-bin-hadoop27_with_Phive
 DERBY_INSTALL_FILE: db-derby-10.10.2.0-bin.zip
 DERBY_FOLDER: db-derby-10.10.2.0-bin
 
-#BIGbench directories with tunings zip
+#Downloaded BigBench tar file
 BIGBENCH_FILE: TPCx-BB_v1.2.zip
 BIGBENCH_FOLDER: TPCx-BB_v1.2
 BIG_BENCH_ENGINE: hive
