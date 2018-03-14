@@ -39,4 +39,4 @@ spark.shuffle.service.port=7337
 spark.yarn.jars={{SPARK_WITH_HIVE_INSTALLED_LOCATION}}/jars/*
 spark.master=yarn
 spark.deploy.mode=client
-{% if BIGBENCH_USE_NR_HUGEPAGES == 'YES' %}spark.executor.extraJavaOptions=-XX:+UseLargePages{%endif%}
+{% if BIGBENCH_USE_NR_HUGEPAGES == 'yes' %}spark.executor.extraJavaOptions=-XX:+UseLargePages{%endif%}

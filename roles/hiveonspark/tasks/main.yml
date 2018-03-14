@@ -149,7 +149,7 @@
   args:
      chdir: "{{HADOOP_INSTALL_LOC}}/{{ DERBY_FOLDER }}/lib"
   register: result
-  when: HIVE_CUSTOM_BUILD != 'YES'
+  when: HIVE_CUSTOM_BUILD != 'yes'
       
 - name: Copy derby dependency jar to Hive Library
   copy:
@@ -159,6 +159,6 @@
     owner: "{{ HADOOP_USER }}"
     group: "{{ HADOOP_GROUP }}"
   with_items: "{{result.stdout_lines}}"
-  when: not ansible_check_mode and HIVE_CUSTOM_BUILD != 'YES'
+  when: not ansible_check_mode and HIVE_CUSTOM_BUILD != 'yes'
   tags:
     - derby_jars_to_hive

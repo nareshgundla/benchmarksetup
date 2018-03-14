@@ -12,7 +12,7 @@ HADOOP_MASTER: localhost.localdomain.com
 CLUSTER_SIZE: "{{(ansible_play_batch | length)|int}}"
 HADOOP_NODES_COUNT: "{% if  CLUSTER_SIZE| version_compare('1',operator='eq') %}{{1|int}}{%elif CLUSTER_SIZE| version_compare('1',operator='gt') %}{{CLUSTER_SIZE|int-1}}{%endif%}"
 HADOOP_HDFS_REPLICATION: "{% if HADOOP_NODES_COUNT|version_compare('3',operator='le')%}{{1|int}}{%else%}{{3|int}}{%endif%}"
-#For Namenode,Datanode heapsize configure below in MD
+#For Namenode,Datanode heapsize configure below in MB
 HADOOP_HDFS_NN_SN_HEAPSIZE_MB: 1024
 #Configure below value to a drive on Namenode
 HADOOP_HDFS_NAME_PREFIX: /data/datab
@@ -33,7 +33,7 @@ YARN_NODEMANAGER_HEAPSIZE_MB: 10240
 REMOTE_HADOOP_SRC: no
 BIGBENCH_USE_NR_HUGEPAGES: no
 USE_NR_HUGEPAGES: "{{BIGBENCH_USE_NR_HUGEPAGES}}"
-SPARK_DYNAMIC_EXECUTION: NO
+SPARK_DYNAMIC_EXECUTION: no
 
 
 

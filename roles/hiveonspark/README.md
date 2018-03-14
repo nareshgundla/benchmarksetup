@@ -14,9 +14,9 @@ This role performs below steps
  * Running Ansible role
 ```
 ansible-playbook playbook.yml -tags hiveonspark
-
+```
 Sample playbook.yml
-
+```
 - name: set up hive on spark on master node
   hosts: master (full name with domain name)
   vars_files:
@@ -24,7 +24,44 @@ Sample playbook.yml
   roles:
     - { role: hiveonspark, tags: hiveonspark}
 ```      
+Sample hadoop-variable.yml
+```
+#USER AND DIRECTORY CONFIG
 
+HADOOP_MASTER: localhost
+#Mention where to create hivedirectories on master node
+HADOOP_HDFS_NAME_PREFIX: /data/dataa
+BENCHMARK_USER: "{{HADOOP_USER}}"
+BIGBENCH_INSTALL_LOC: "/{{BENCHMARK_USER}}"
+#Hive version 
+HIVE_INSTALL_FILE: apache-hive-3.0.0-SNAPSHOT-bin.tar.gz
+HIVE_FOLDER: apache-hive-3.0.0-SNAPSHOT-bin
+HIVE_VERSION_PREFIX: 3
+
+#SPARK CUSTOM BUILD FOR HIVE ON SPARK
+SPARK_WITHOUT_HIVE_INSTALL_FILE: spark-2.2.0-bin-hadoop27-without-hive.tgz
+SPARK_WITHOUT_HIVE_FOLDER: spark-2.2.0-bin-hadoop28-without-hive
+
+SPARK_WITH_HIVE_INSTALL_FILE: spark-2.2.0-bin-hadoop27_with_Phive.tgz
+SPARK_WITH_HIVE_FOLDER: spark-2.2.0-bin-hadoop27_with_Phive
+
+#DERBY VERSION
+DERBY_INSTALL_FILE: db-derby-10.10.2.0-bin.zip
+DERBY_FOLDER: db-derby-10.10.2.0-bin
+
+#BIGbench directories with tunings zip
+BIGBENCH_FILE: TPCx-BB_v1.2.zip
+BIGBENCH_FOLDER: TPCx-BB_v1.2
+BIG_BENCH_ENGINE: hive
+
+#SPARK EXECUTOR MEMORY SETTINGS
+SPARK_DRIVER_MEM: 10g
+SPARK_EXECUTOR_MEM: 26g
+SPARK_EXECUTOR_CORES: 8
+SPARK_YARN_EXECUTOR_MEM_OVERHEAD_MB: 4096
+BIGBENCH_USE_NR_HUGEPAGES: "yes"
+REMOTE_BIGBENCH_SRC: no
+```
 Assumptions/ pre-requisties
  * Assumes you have already ran the hadoop role on all the machines.
  * Assumes you have already downloaded BigBench Tar file from http://www.tpc.org/tpc_documents_current_versions/current_specifications.asp and placed inside hadoop_software/package_dir

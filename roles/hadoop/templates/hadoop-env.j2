@@ -49,7 +49,7 @@ export HADOOP_OPTS="$HADOOP_OPTS -Djava.net.preferIPv4Stack=true"
 
 # Command specific options appended to HADOOP_OPTS when specified
 export HADOOP_NAMENODE_OPTS="-Xmx{{HADOOP_HDFS_NN_SN_HEAPSIZE_MB}}m -Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_NAMENODE_OPTS"
-export HADOOP_DATANODE_OPTS="-Xmx{{HADOOP_HDFS_NN_SN_HEAPSIZE_MB}}m -Dhadoop.security.logger=ERROR,RFAS{%if BIGBENCH_USE_NR_HUGEPAGES == 'yes'%} -XX:+UseLargePages {%endif%} $HADOOP_DATANODE_OPTS"
+export HADOOP_DATANODE_OPTS="-Xmx{{HADOOP_HDFS_NN_SN_HEAPSIZE_MB}}m -Dhadoop.security.logger=ERROR,RFAS{%if USE_NR_HUGEPAGES == 'yes'%} -XX:+UseLargePages {%endif%} $HADOOP_DATANODE_OPTS"
 
 export HADOOP_SECONDARYNAMENODE_OPTS="-Xmx{{HADOOP_HDFS_NN_SN_HEAPSIZE_MB}}m -Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_SECONDARYNAMENODE_OPTS"
 

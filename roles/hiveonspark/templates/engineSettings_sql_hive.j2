@@ -51,7 +51,7 @@ set hive.spark.job.monitor.timeout=3600s;
 set spark.network.timeout=3600s;
 set spark.kryo.referenceTracking=false;
 set spark.io.compression.codec=lzf;
-set spark.executor.extraJavaOptions=-XX:+UseParallelOldGC -XX:ParallelGCThreads=8 -XX:NewRatio=1 -XX:SurvivorRatio=1{% if BIGBENCH_USE_NR_HUGEPAGES == 'YES' %} -XX:+UseLargePages{%endif%};
+set spark.executor.extraJavaOptions=-XX:+UseParallelOldGC -XX:ParallelGCThreads=8 -XX:NewRatio=1 -XX:SurvivorRatio=1{% if BIGBENCH_USE_NR_HUGEPAGES == 'yes' %} -XX:+UseLargePages{%endif%};
 set spark.memory.storageFraction=0.01;
 set spark.driver.memory={{SPARK_DRIVER_MEM}};
 set spark.executor.cores={{SPARK_EXECUTOR_CORES}};
@@ -77,7 +77,7 @@ set hive.vectorized.execution.reduce.groupby.enabled=true;
 -- Note the "bigbench." prefix! Actual enabling is query statement specific and 
 -- only activated where required to achive a deterministic output.
 -- ###########################
-set bigbench.hive.optimize.sampling.orderby=false;
+set bigbench.hive.optimize.sampling.orderby=true;
 set bigbench.hive.optimize.sampling.orderby.number=20000;
 set bigbench.hive.optimize.sampling.orderby.percent=0.1;
 
