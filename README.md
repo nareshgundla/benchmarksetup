@@ -15,7 +15,7 @@ This projects help you in building hadoop,hive and spark for hive on spark setup
 
 ### Prerequisites
 Below Softwares are required for setup.
- * Git software and proxy configured for git (if any)
+ * Git software and proxy configuration for git (if any)
  * Maven proxy configured (if any)
  * Currently this project supports Centos OS only
 
@@ -79,3 +79,31 @@ For HiBench:
 spark: 2.2.0
 
 ```
+
+
+Capacity Planning:
+Cluster Capacity on Hdfs Data Size and Growth Projection
+
+Cluster Size:
+  Hdfs Space per Node = (Raw Disk space - 20% for non dfs storage)/ 3 (RF)
+  Cluster Nodes = Total HDFS space / HDFS space per node
+
+  4 to 6 GB per core
+  1/1.5 per disks per core
+  1 to 3 TB SATA disks space per core
+
+  NN:  2GB(default) + 1GB per 100TB of disk storage
+
+  HDFS storage growth and current capacity utilization
+
+Hardware Selection:
+    Master Nodes:
+
+    Compute Nodes:
+
+
+Reference: https://www.slideshare.net/vgogate/hadoop-configuration-performance-tuning
+
+
+Hadoop Configuration:
+
